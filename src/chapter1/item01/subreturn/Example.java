@@ -1,8 +1,5 @@
 package chapter1.item01.subreturn;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
 public class Example {
 
     public static void main(String[] args) {

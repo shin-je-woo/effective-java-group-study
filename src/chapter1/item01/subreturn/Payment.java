@@ -1,7 +1,9 @@
 package chapter1.item01.subreturn;
 
 public interface Payment {
+
     void pay();
+
     static Payment accessPayment(String phone) {
         if ("galaxy".equals(phone)) {
             return new SamsungPay();

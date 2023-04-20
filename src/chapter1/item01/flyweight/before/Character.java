@@ -1,6 +1,7 @@
 package chapter1.item01.flyweight.before;
 
 public class Character {
+
     private char value;
     private String color;
     private String fontFamily;

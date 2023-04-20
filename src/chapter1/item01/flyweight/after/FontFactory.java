@@ -1,7 +1,5 @@
 package chapter1.item01.flyweight.after;
 
-import chapter1.item01.flyweight.after.Font;
-
 import java.util.HashMap;
 import java.util.Map;
 

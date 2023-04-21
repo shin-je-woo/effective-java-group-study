@@ -1,4 +1,4 @@
-package chapter1.item01.subreturn;
+package chapter1.item01.DI;
 
 public class PayApp {
 

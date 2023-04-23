@@ -88,6 +88,27 @@ public static final Elvis INSTANCE = new Elvis();
   반환되는 객체는 새로운 클래스의 인스턴스로 변경된다는 것
 
 ```java  
+public class Elvis {
+private static final Map<String, Elvis> ELVI_MAP = new ConcurrentHashMap<>();
+
+    private final String name;
+    
+    private Elvis(String name) {
+        this.name = name;
+    }
+    
+    public static Elvis getInstance(String name) {
+        return ELVI_MAP.computeIfAbsent(name, Elvis::new);
+    }
+    
+    public String getName() {
+        return name;
+    }
+}
+```
+
+* 두 번째 장점은 원한다면 정적 팩터리를 제네릭 싱글턴 팩터리로 만들 수 있다.
+```java  
 public class Elvis<T> {
     private static final Map<Class<?>, Elvis<?>> INSTANCE_MAP = new HashMap<>();
     private final T resource;
@@ -108,26 +129,6 @@ public class Elvis<T> {
     public T getResource() {
         return resource;
     }
-}
-```
-
-* 두 번째 장점은 원한다면 정적 팩터리를 제네릭 싱글턴 팩터리로 만들 수 있다.
-```java  
-public class Elvis<T> {
-  private static final Map<Class<?>, Object> INSTANCE_MAP = new ConcurrentHashMap<>();
-  private final T resource;
-
-  private Elvis(T resource) {
-    this.resource = resource;
-  }
-
-  public static <T> Elvis<T> getInstance(Class<T> resourceClass, Supplier<T> resourceSupplier) {
-     return (Elvis<T>) INSTANCE_MAP.computeIfAbsent(resourceClass, key -> new Elvis<>(resourceSupplier.get()));
-  }
-
-  public T getResource() {
-    return resource;
-  }
 }
 ```
 

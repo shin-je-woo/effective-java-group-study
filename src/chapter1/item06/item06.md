@@ -7,8 +7,8 @@ String str1 = new String("Test");
 * 해당 방식은 실행될 때마다 String 인스턴스를 새로 만든다. 
 * 생성자에 넘겨진 "Test"자체가 생성자로 만들어내는 String과 기능적으로 완전히 똑같다.
 ```
-String str1 = "Test";  // 새로운 String 객체 생성
-String str2 = "Test";  // 이미 생성된 String 객체를 참조
+String str1 = "Test";  // 새로운 String 변수 생성
+String str2 = "Test";  // 이미 생성된 String 변수 참조
 ```
 * 개선안으로, 하나의 String 인스턴스를 사용한다. 
 * 같은 JVM 안에서 같은 문자열 리터럴을 사용하는 모든 코드가 같은 객체를 재사용함이 보장된다.

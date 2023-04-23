@@ -88,21 +88,25 @@ public static final Elvis INSTANCE = new Elvis();
   반환되는 객체는 새로운 클래스의 인스턴스로 변경된다는 것
 
 ```java  
-public class Elvis {
-private static final Map<String, Elvis> ELVI_MAP = new ConcurrentHashMap<>();
+public class Elvis<T> {
+    private static final Map<Class<?>, Elvis<?>> INSTANCE_MAP = new HashMap<>();
+    private final T resource;
 
-    private final String name;
-    
-    private Elvis(String name) {
-        this.name = name;
+    private Elvis(T resource) {
+        this.resource = resource;
     }
-    
-    public static Elvis getInstance(String name) {
-        return ELVI_MAP.computeIfAbsent(name, Elvis::new);
+
+    public static <T> Elvis<T> getInstance(Class<T> resourceClass, Supplier<T> resourceSupplier) {
+        Elvis<?> instance = INSTANCE_MAP.get(resourceClass);
+        if (instance == null) {
+            instance = new Elvis<>(resourceSupplier.get());
+            INSTANCE_MAP.put(resourceClass, instance);
+        }
+        return (Elvis<T>) instance;
     }
-    
-    public String getName() {
-        return name;
+
+    public T getResource() {
+        return resource;
     }
 }
 ```

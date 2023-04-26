@@ -122,3 +122,23 @@ public static void main(String[] args) {
     System.out.println(redPoint.equals(greenPoint)); // false
 }
 ```
+
+## 추이성 - 리스코프 치환 원칙
+* Point클래스의 equals를 아래와 같이 재정의 해보자.
+```java
+@Override
+public boolean equals(Object o) {
+    if (o == null | o.getClass() != this.getClass()) return false;
+
+    Point p = (Point) o;
+    return p.x == x && p.y == y;
+}
+```
+* instancof검사를 getClass검사로 바꾸게 되면 코드는 모두 동작하겠지만, ColorPoint와 Point는 사실상 비교할 수 없게 된다.
+* Point의 하위타입인 ColorPoint는 Point의 equals기능을 상실했다고 보아야 한다.
+* *구체클래스를 확장해 새로운 값을 추가하면서 equals 규약을 만족시킬 방법은 존재하지 않는다.*
+
+✅ 리스코프 치환 원칙(LSP)  
+* 어떤 타입에 있어 중요한 속성이라면 그 하위 타입에서도 마찬가지로 중요하다.    
+* 따라서, 그 타입의 모든 메서드가 하위 타입에서도 똑같이 잘 작동해야 한다.
+* Point의 하위 클래스는 정의상 여전히 Point이므로 어디서든 Point로써 활용될 수 있어야 한다.

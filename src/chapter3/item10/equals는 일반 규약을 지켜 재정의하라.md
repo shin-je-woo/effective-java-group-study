@@ -63,3 +63,62 @@ public static void main(String[] args) {
     return o instanceof CaseString && ((CaseString) o).str.equalsIgnoreCase(str);
 }
 ```
+
+# 💡 3. 추이성(transitivity)
+* 좌표(x, y)를 나타내는 클래스를 예로 들어보자.
+```java
+public class Point {
+
+    private final int x;
+    private final int y;
+
+    public Point(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Point)) return false;
+        Point p = (Point) o;
+        return p.x == x && p.y == y;
+    }
+}
+```
+* 이제 이 클래스를 확장해서 색상을 더해보자.
+```java
+public class ColorPoint extends Point {
+
+    private final Color color;
+
+    public ColorPoint(int x, int y, Color color) {
+        super(x, y);
+        this.color = color;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        // 관련 없는 클래스와 비교하면 false
+        if (!(o instanceof Point)) return false;
+
+        // o가 일반 Point이면 Point의 equals로 비교한다.(색상을 무시한다.)
+        if (!(o instanceof ColorPoint)) {
+            return o.equals(this);
+        }
+        
+        return super.equals(o) && ((ColorPoint) o).color == color;
+    }
+}
+```
+* 아래 코드는 위 2개의 클래스를 equals 비교했을 때 나타나는 추이성 위반 문제이다.
+```java
+public static void main(String[] args) {
+    ColorPoint redPoint = new ColorPoint(5, 5, Color.RED);
+    Point normalPoint = new Point(5, 5);
+    ColorPoint greenPoint = new ColorPoint(5, 5, Color.GREEN);
+
+    System.out.println(redPoint.equals(normalPoint)); // true
+    System.out.println(normalPoint.equals(greenPoint)); // true
+    System.out.println(redPoint.equals(greenPoint)); // false
+}
+```

@@ -232,3 +232,33 @@ public boolean equals(Object o) {
 }
 ```
 * instanceof 연산자는 첫 번째 피연산자가 null이면 false를 반환하기 때문에 null검사를 명시적으로 하지 않아도 된다.
+
+# 💡 양질의 equals 메서드 재정의 방법
+```java
+@Override
+public boolean equals(Object o) {
+    // 1. == 연산자를 사용해 입력이 자기 자신의 참조인지 확인한다.
+    if (this == o) {
+        return true;
+    }
+
+    // 2. instanceof 연산자로 입력이 올바른 타입인지 확인한다.
+    if (!(o instanceof Point)) {
+        return false;
+    }
+
+    // 3. 입력을 올바른 타입으로 형변환 한다.
+    Point point = (Point) o;
+
+    // 4. 입력 개체와 자기 자신의 대응되는 '핵심' 필드들이 모두 일치하는지 하나씩 검사한다.
+    return this.x == p.x && this.y == p.y;
+}
+```
+## 주의사항
+* 기본 타입 필드는 == 으로 비교하고 그 중 double, float는 Double.compare(), Float.compare()을 이용해 검사해야 한다. 이유는 부동소수점을 다뤄야 하기 때문이다.
+* 참조 타입 필드는 equals로 비교한다.
+* eqauls메서드는 Object만 매개변수로 받아야 한다.(Object.equals를 Override해야하기 때문)
+* 성능을 생각해서 다를 가능성이 더 크거나 비교하는 비용이 싼 필드를 먼저 비교하자.
+* 동기화용 락(lock) 필드 같이 객체의 논리적 상태와 관련 없는 필드는 비교하면 안된다.
+* equals를 재정의할 땐 `hashCode`도 반드시 재정의하자.(아이템11)
+* eqauls를 구현했다면 세 가지만 자문해보자. *대칭적인가? 추이성이 있는가? 일관적인가?*

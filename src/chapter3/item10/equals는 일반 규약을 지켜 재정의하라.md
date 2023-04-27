@@ -142,3 +142,93 @@ public boolean equals(Object o) {
 * 어떤 타입에 있어 중요한 속성이라면 그 하위 타입에서도 마찬가지로 중요하다.    
 * 따라서, 그 타입의 모든 메서드가 하위 타입에서도 똑같이 잘 작동해야 한다.
 * Point의 하위 클래스는 정의상 여전히 Point이므로 어디서든 Point로써 활용될 수 있어야 한다.
+
+# 💡 4. 일관성(consistency)
+* 두 객체가 같다면 앞으로도 영원히 같아야 한다.
+* 클래스가 불변이든 가변이든 equals의 판단에 신뢰할 수 없는 자원이 끼어들게 해서는 안된다.
+* 아래 URL의 equals 예제를 보자.
+```java
+public final class URL implements java.io.Serializable {
+    ...
+    public boolean equals(Object obj) {
+        if (!(obj instanceof URL))
+            return false;
+        URL u2 = (URL)obj;
+
+        return handler.equals(this, u2);
+    }
+    ...
+```
+```java
+public abstract class URLStreamHandler {
+    ...
+    protected boolean equals(URL u1, URL u2) {
+        String ref1 = u1.getRef();
+        String ref2 = u2.getRef();
+        return (ref1 == ref2 || (ref1 != null && ref1.equals(ref2))) &&
+               sameFile(u1, u2);
+    }
+    ...
+    protected boolean sameFile(URL u1, URL u2) {
+        // Compare the protocols.
+        if (!((u1.getProtocol() == u2.getProtocol()) ||
+              (u1.getProtocol() != null &&
+               u1.getProtocol().equalsIgnoreCase(u2.getProtocol()))))
+            return false;
+
+        // Compare the files.
+        if (!(u1.getFile() == u2.getFile() ||
+              (u1.getFile() != null && u1.getFile().equals(u2.getFile()))))
+            return false;
+
+        // Compare the ports.
+        int port1, port2;
+        port1 = (u1.getPort() != -1) ? u1.getPort() : u1.handler.getDefaultPort();
+        port2 = (u2.getPort() != -1) ? u2.getPort() : u2.handler.getDefaultPort();
+        if (port1 != port2)
+            return false;
+
+        // Compare the hosts.
+        if (!hostsEqual(u1, u2))
+            return false;
+
+        return true;
+    }
+    ...
+    protected boolean hostsEqual(URL u1, URL u2) {
+        InetAddress a1 = getHostAddress(u1);
+        InetAddress a2 = getHostAddress(u2);
+        // if we have internet address for both, compare them
+        if (a1 != null && a2 != null) {
+            return a1.equals(a2);
+        // else, if both have host names, compare them
+        } else if (u1.getHost() != null && u2.getHost() != null)
+            return u1.getHost().equalsIgnoreCase(u2.getHost());
+         else
+            return u1.getHost() == null && u2.getHost() == null;
+    }
+}
+```
+* java.net.URL 클래스는 URL과 매핑된 host의 IP주소를 이용해 비교한다.
+* 이 때 호스트이름을 IP주소로 바꾸기 위해 네트워크를 통하게 되는데, 그 결과를 항상 보장할 수 없게 된다.
+* 이러한 문제를 피하기 위해 equals는 항시 메모리에 존재하는 객체만을 사용한 결정적 계산만을 수행해야 한다는 것을 알 수 있다.
+
+# 💡 null-아님(non-null)
+* 이 부분은 쉽게 지킬수 있는데, `NullPointerException`이 발생하는 상황만 조심하자.
+* instanceof 연산자로 입력 매개변수가 올바른 타입인지 검사하면 이 경우를 피할 수 있는데, 이를 `묵시적 null검사`라고 한다.
+```java
+@Override
+public boolean equals(Object o) {
+    // 인텔리제이가 생성하는 방식
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Point point = (Point) o;
+    return x == point.x && y == point.y;
+
+    // 이펙티브 자바의 추천 방식 - null검사할 필요 없이 instanceof연산자로 묵시적 null검사를 할 것
+    if (!(o instanceof Point)) return false;
+    Point p = (Point) o;
+    return p.x == x && p.y == y;
+}
+```
+* instanceof 연산자는 첫 번째 피연산자가 null이면 false를 반환하기 때문에 null검사를 명시적으로 하지 않아도 된다.

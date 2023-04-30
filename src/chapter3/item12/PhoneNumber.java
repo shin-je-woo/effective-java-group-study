@@ -27,10 +27,11 @@ public final class PhoneNumber {
      * 앞에서부터 0으로 채워나간다. 예컨대 가입자 번호가 123이라면
      * 전화번호의 마지막 네 문자는 "0123"이 된다.
      */
-//    @Override public String toString() {
-//        return String.format("%03d-%03d-%04d",
-//                areaCode, prefix, lineNum);
-//    }
+    @Override public String toString() {
+        return String.format("%03d-%03d-%04d",
+                areaCode, prefix, lineNum);
+    }
+
 
     public static void main(String[] args) {
         PhoneNumber jenny = new PhoneNumber(707, 118, 5309);

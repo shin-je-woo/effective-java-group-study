@@ -89,53 +89,70 @@ public static final Elvis INSTANCE = new Elvis();
 
 ```java  
 public class Elvis {
-private static final Map<String, Elvis> ELVI_MAP = new ConcurrentHashMap<>();
+    public static final Elvis INSTANCE = new Elvis();
 
-    private final String name;
-    
-    private Elvis(String name) {
-        this.name = name;
+    private Elvis() {
     }
-    
-    public static Elvis getInstance(String name) {
-        return ELVI_MAP.computeIfAbsent(name, Elvis::new);
+
+    public static Elvis getInstance() {
+        //return INSTANCE;
+        return new Elvis();
     }
-    
-    public String getName() {
-        return name;
+
+    public void leaveTheBuilding() {
+        System.out.println("Elvis.leaveTheBuilding");
+    }
+
+    public static void main(String[] args) {
+        System.out.println(Elvis.getInstance());
+        System.out.println(Elvis.getInstance());
     }
 }
 ```
 
 * 두 번째 장점은 원한다면 정적 팩터리를 제네릭 싱글턴 팩터리로 만들 수 있다.
 ```java  
-public class Elvis<T> {
-    private static final Map<Class<?>, Elvis<?>> INSTANCE_MAP = new HashMap<>();
-    private final T resource;
+public class GenericElvis<T> {
+    public static final GenericElvis<Object> INSTANCE = new GenericElvis<>();
 
-    private Elvis(T resource) {
-        this.resource = resource;
+    private GenericElvis() {
     }
 
-    public static <T> Elvis<T> getInstance(Class<T> resourceClass, Supplier<T> resourceSupplier) {
-        Elvis<?> instance = INSTANCE_MAP.get(resourceClass);
-        if (instance == null) {
-            instance = new Elvis<>(resourceSupplier.get());
-            INSTANCE_MAP.put(resourceClass, instance);
-        }
-        return (Elvis<T>) instance;
+    public static <T> GenericElvis<T> getInstance() {
+        return (GenericElvis<T>) INSTANCE;
     }
 
-    public T getResource() {
-        return resource;
+    public void leaveTheBuilding() {
+        System.out.println("GenericElvis.leaveTheBuilding");
+    }
+
+    public static void main(String[] args) {
+        GenericElvis<String> instance = GenericElvis.getInstance();
+        GenericElvis<Integer> instance2 = GenericElvis.getInstance();
+        System.out.println("instance = " + instance);
+        System.out.println("instance2 = " + instance2);
     }
 }
 ```
-
 * 정적 팩터리의 메서드 참조를 공급자로 사용할 수 있다.
+```java  
+public interface Singer {
+    void sing();
+}
 ```
-    Supplier<Elvis> elvisSupplier = Elvis::getInstance;
-    Elvis elvis = elvisSupplier.get();
+```java  
+public class Concert {
+
+    public void start(Supplier<Singer> supplier) {
+        Singer singer = supplier.get();
+        singer.sing();
+    }
+
+    public static void main(String[] args) {
+        Concert concert = new Concert();
+        concert.start(Elvis::getInstance);
+    }
+}
 ```
 ### 3) 위 2개의 방식의 한계점
 ### 3-1) 리플렉션 API의 private 생성자 접근
@@ -189,17 +206,43 @@ private Object readResolve(){
 
 
 ### 4) 열거 타입 방식의 싱글턴 (대부분 상황에서 가장 좋은 방법)
-* 원소가 하나인 열거 타입을 선언한다.
-* public 필드 방식과 비슷하지만, 더 간결하고 추가 노력 없이 직렬화 할 수 있음
-* 아주 복잡한 직렬화상황 및 리플렉션 공격에서도 제2의 인스턴스가 생기는 일을 완벽히 막아준다.
-* 단, 만들려는 싱글턴이 Enum 외의 클래스를 상속해야 한다면 사용불가하다. (열거 타입이 다른 인터페이스를 구현하도록 선언할 수는 있다)
-
 ```java
 public enum ElvisEnum {
-INSTANCE;
+  INSTANCE;
 
-    public void leaveTheBuilding(){
+  public void leaveTheBuilding(){
 
-    }
+  }
+  public static void main(String[] args) {
+    ElvisEnum instance = ElvisEnum.INSTANCE;
+  }
 }
 ```
+* 원소가 하나인 열거 타입을 선언한다. 더 간결하고 추가 노력 없이 직렬화 할 수 있음
+* 리플렉션 내부코드에 enum 예외처리가 되어 있어 리플렉션 공격에서도 제2의 인스턴스가 생기는 일을 완벽히 막아준다.
+```java
+//라인 실행 시 오류  
+Constructor<ElvisEnum> declaredConstructor = ElvisEnum.class.getDeclaredCo
+```
+* 역직렬화시에도 같은 객체를 반환해줌 
+```java
+public class EnumElvisSerialization {
+
+  public static void main(String[] args) {
+    try (ObjectOutput out = new ObjectOutputStream(new FileOutputStream("elvis.obj"))) {
+      out.writeObject(ElvisEnum.INSTANCE);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    try (ObjectInput in = new ObjectInputStream(new FileInputStream("elvis.obj"))) {
+      ElvisEnum elvis = (ElvisEnum) in.readObject();
+      System.out.println(elvis == ElvisEnum.INSTANCE);
+    } catch (IOException | ClassNotFoundException e) {
+      e.printStackTrace();
+    }
+  }
+}
+```
+* 단, 만들려는 싱글턴이 Enum 외의 클래스를 상속해야 한다면 사용불가하다. (열거 타입이 다른 인터페이스를 구현하도록 선언할 수는 있다)
+

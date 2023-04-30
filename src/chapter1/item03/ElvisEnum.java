@@ -6,4 +6,7 @@ public enum ElvisEnum {
     public void leaveTheBuilding(){
 
     }
+    public static void main(String[] args) {
+        ElvisEnum instance = ElvisEnum.INSTANCE;
+    }
 }

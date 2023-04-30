@@ -58,8 +58,8 @@ public class Stack implements Cloneable {
 
         Stack copy = stack.clone();
 
-        System.out.println(stack.elements == copy.elements); //false
-        System.out.println(stack.elements[0] == copy.elements[0]); //true
+        System.out.println(stack.elements != copy.elements);
+        System.out.println(stack.elements[0] != copy.elements[0]);
 
 
         while (!stack.isEmpty())

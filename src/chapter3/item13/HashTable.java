@@ -21,16 +21,18 @@ public class HashTable implements Cloneable {
 
         //재귀호출 떄문에 리스트의 원소 수만큼 스택 프레임을 소비하여, 리스트가 길면 스택 오버플로우를 이르킬 수 있따.
         /*
-
-        public Entry deepCopy() {
-            return new Entry(key, value, next == null ? null : next.deepCopy());
-        }
-*/
-
+         */
+//        public Entry deepCopy() {
+//            Entry entry = new Entry(key, value, next == null ? null : next.deepCopy());
+//            return entry;
+//        }
+//
+//
         public Entry deepCopy() {
             Entry result = new Entry(key, value, next);
             for (Entry p = result ; p.next != null ; p = p.next) {
-                p.next = new Entry(p.next.key, p.next.value, p.next.next);
+                Entry next = new Entry(p.next.key, p.next.value, p.next.next);
+                p.next = next;
             }
             return result;
         }
@@ -67,6 +69,9 @@ public class HashTable implements Cloneable {
         HashTable result = null;
         try {
             result = (HashTable)super.clone();
+
+            //result.buckets = this.buckets.clone();
+
             result.buckets = new Entry[this.buckets.length];
             //result.buckets = CreateNewBucket();
             for (int i = 0 ; i < this.buckets.length; i++) {
@@ -87,6 +92,7 @@ public class HashTable implements Cloneable {
     public static void main(String[] args) {
         HashTable hashTable = new HashTable();
         Entry entry = new Entry(new Object(), new Object(), null);
+        //Entry entry2 = new Entry(new Object(), new Object(), entry);
         hashTable.buckets[0] = entry;
         HashTable clone = hashTable.clone();
         System.out.println(hashTable.buckets[0] == entry);

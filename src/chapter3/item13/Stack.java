@@ -1,5 +1,6 @@
 package chapter3.item13;
 import java.util.Arrays;
+import java.util.EmptyStackException;
 
 // Stack의 복제 가능 버전 (80-81쪽)
 public class Stack implements Cloneable {

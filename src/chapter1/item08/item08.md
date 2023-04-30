@@ -25,7 +25,6 @@ finalizer, cleaner 객체 소멸자라고 하지만 본 교재에서는 불 필�
 
 ## 코드 메인 Class
 ```java
-public class Coffee {
 public class Room implements AutoCloseable {
 	private static final Cleaner cleaner = Cleaner.create();
     

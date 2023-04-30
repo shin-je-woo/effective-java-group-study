@@ -4,9 +4,9 @@ public class ElvisReflection {
     public static final ElvisReflection INSTANCE = new ElvisReflection();
 
     private ElvisReflection() {
-        if (INSTANCE != null) {
-            throw new IllegalStateException();
-        }
+//        if (INSTANCE != null) {
+//            throw new IllegalStateException();
+//        }
     }
     public static ElvisReflection getInstance() {
         return INSTANCE;

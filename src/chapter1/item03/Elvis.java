@@ -20,8 +20,10 @@ public class Elvis implements Singer{
         System.out.println(Elvis.getInstance());
     }
 
+
     @Override
     public void sing() {
-        System.out.println("나는가수다");
+        System.out.println("sing");
+
     }
 }

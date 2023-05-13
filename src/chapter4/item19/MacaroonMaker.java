@@ -29,7 +29,7 @@ public class MacaroonMaker {
      *
      * @since       2023.05.07
      */
-    public void insertPeeling(){
+    protected void insertPeeling(){
         System.out.println("앙글레즈 버터 그림을 넣습니다.");
     }
 }

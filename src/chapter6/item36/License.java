@@ -6,12 +6,19 @@ import java.util.Set;
 public class License {
     public enum Type {PC, MOBILE, MSG, MOBILE_MSG, MAIL}
 
-    public void applyLicense(Set<Type> licenses){
-        System.out.println(licenses);
+
+    static class MyUser {
+        private final String name;
+        private final Set<License.Type> lic;
+
+        public MyUser(String name, Set<License.Type> lic) {
+            this.name = name;
+            this.lic = lic;
+        }
     }
 
     public static void main(String[] args) {
-        License license = new License();
-        license.applyLicense(EnumSet.of(Type.MOBILE, Type.MOBILE_MSG));
+        MyUser user1 = new MyUser("유저1", EnumSet.of(License.Type.MOBILE, License.Type.MOBILE_MSG));
+        System.out.println(user1.lic);
     }
 }

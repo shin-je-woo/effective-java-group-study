@@ -15,4 +15,8 @@ public class Merge {
 
         System.out.println(map);
     }
+
+    public static String hi(String name){
+        return "hi" + name;
+    }
 }

@@ -66,15 +66,17 @@ public class ExampleClass {
 ### requireNonNull 
 * 자바 7에서 추가된 requireNonNull 메소드는 유연하고 사용하기도 편하니, 더 이상 null 검사를 수동으로 하지않아도된다. 원하는 예외메세지도 위와 같이 지정할 수 있다.
 ```java
-	public static BigInteger mod(BigInteger m) {
-		if (m==null) {
-			throw new IllegalArgumentException("계수(m)는 null일 수 없습니다.");
-		}
-		if (m.signum() <= 0) {
-	    	throw new ArithmeticException("계수(m)는 양수여야합니다. " + m);
-	    }
-	    return m;
+public class ObjectBean {
+	private String str;
+
+	public String getStr() {
+		return str;
 	}
+
+	public void setStr(String str) {
+		this.str = Objects.requireNonNull(str,"null이면 안돼!");
+	}
+}
 ```
 
 * 하지만 이런 방법보다는 @Nullable null값을 허용하는 혹은 반대로 @NonNull 처럼 null값을 허용하지 않는 어노테이션등이 존재하기도 합니다.

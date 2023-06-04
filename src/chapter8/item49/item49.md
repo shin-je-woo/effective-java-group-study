@@ -62,7 +62,7 @@ public class ExampleClass {
 	}
 ```
 
-
+##
 ### requireNonNull 
 * 자바 7에서 추가된 requireNonNull 메소드는 유연하고 사용하기도 편하니, 더 이상 null 검사를 수동으로 하지않아도된다. 원하는 예외메세지도 위와 같이 지정할 수 있다.
 ```java

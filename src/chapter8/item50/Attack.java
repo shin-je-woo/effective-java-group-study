@@ -8,7 +8,6 @@ public class Attack {
         attack2();
     }
 
-
     private static void attack1() {
         Date start = new Date();
         Date end = new Date();

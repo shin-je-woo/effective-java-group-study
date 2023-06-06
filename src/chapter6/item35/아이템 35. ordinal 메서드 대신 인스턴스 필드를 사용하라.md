@@ -1,0 +1,80 @@
+# 💡 아이템 35 ordinal 메서드 대신 인스턴스 필드를 사용하라
+
+## 개요
+* 열거 타입 상수는 자연스럽게 하나의 정수값에 대응하게 됩니다.
+* 모든 열거 타입은 해당 상수가 그 열거 타입에서 몇 번쨰 위치인지를 반환하는 ordinal를 제공합니다.
+* 이런 이유로 열거 타입 상수와 연결된 정수값이 필요하다면, ordinal를 활용하여 선언된 순서를 확인할 수 있지만 **아래 예시들을 통해 쓰이지 않는 이유**에 대해서 알아 봅시다.
+
+	##
+### ✅ 예시코드
+```java
+enum DayOfWeek {
+    MONDAY,
+    TUESDAY,
+    WEDNESDAY,
+    THURSDAY,
+    FRIDAY,
+    SATURDAY,
+    SUNDAY
+}
+
+public class EnumMethod {
+    public static void main(String[] args) {
+        DayOfWeek day = DayOfWeek.TUESDAY;
+        int ordinal = day.ordinal();
+
+        System.out.println("Ordinal: " + ordinal);
+        // Output: Ordinal: 1
+
+        // 이후에 새로운 상수를 추가하면 기존 코드와 호환성이 깨짐
+        DayOfWeek newDay = DayOfWeek.valueOf("WEEKEND");
+        System.out.println("Ordinal of WEEKEND: " + newDay.ordinal());
+        // Output: Ordinal of WEEKEND: 7
+    }
+}
+```
+
+* ordinal() 메서드를 사용하여 DayOfWeek **열거 타입의 상수의 순서를 확인하고 출력**합니다. 하지만 ordinal() 메서드를 사용하면 다음과 같은 **문제점이 발생**합니다.
+  
+### ✔ 1.호환성 문제
+* 만약 DayOfWeek 열거 타입에 새로운 상수를 추가한다면, 기존에 사용하던 ordinal() 값을 사용하는 코드와의 호환성이 깨집니다. 
+* 새로운 상수가 추가되면 기존 상수의 ordinal() 값이 변경되므로, 순서에 의존하는 코드는 오동작할 수 있습니다.
+  
+### ✔ 1.가독성 문제
+* ordinal() 메서드는 숫자 값을 반환하기 때문에 해당 값이 어떤 의미를 가지는지 명확하게 알 수 없습니다. 코드를 보는 사람은 숫자의 의미를 알기 위해 문서를 참조해야 합니다.
+* 따라서, ordinal() 메서드를 사용하는 것보다는 인스턴스 필드를 활용하여 상수의 의미를 명확히 드러내고, 호환성 문제를 피할 수 있는 방법을 사용하는 것이 좋습니다. 
+
+	##
+### ✅ 예시코드
+```java
+enum DayOfWeekFiled {
+    MONDAY("Monday"),
+    TUESDAY("Tuesday"),
+    WEDNESDAY("Wednesday"),
+    THURSDAY("Thursday"),
+    FRIDAY("Friday"),
+    SATURDAY("Saturday"),
+    SUNDAY("Sunday");
+
+    private final String displayName;
+
+    DayOfWeek(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+}
+```
+
+* 위의 코드에서 DayOfWeekFiled 열거 타입은 각 요일을 나타내는 상수를 가지고 있습니다. 
+* 각 상수는 displayName이라는 인스턴스 필드를 가지고 있으며, 해당 요일의 표시 이름을 저장합니다.
+* 이렇게 하면 DayOfWeekFiled.MONDAY.getDisplayName()과 같이 메서드를 사용하여 요일의 표시 이름을 가져올 수 있습니다. 이 방식은 코드의 가독성과 유지보수성을 향상시킬 수 있습니다.
+
+## 정리
+### Enum의 API 문서에는 이렇게 쓰여있다고 합니다.
+
+"대부분의 프로그래머는 이 메서드를 쓸 일이 없다. 이 메서드는 EnumSet과 EnumMap 같이 열거 타입 기반의 범용 자료구조에 쓸 목적으로 설계되었다."
+
+즉, 위와 같은 용도가 아니라면 ordinal 메서드는 절대 사용하지 않도록 한다.

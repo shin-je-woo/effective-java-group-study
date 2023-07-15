@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.Spliterator;
 
-public class ForwardingSet<E> implements Set {
+public class ForwardingSet<E> implements Set<E>{
     // 재사용할 수 있는 전달 클래스
     private final Set<E> s;
     public ForwardingSet(Set<E> s) { this.s = s; }
@@ -30,11 +30,11 @@ public class ForwardingSet<E> implements Set {
         return s.toArray();
     }
 
-    public boolean add(Object o) {
-        return s.add((E) o);
+    public boolean add(E e) {
+        return s.add(e);
     }
 
-    public boolean addAll(Collection c) {
+    public boolean addAll(Collection<? extends E> c) {
         return s.addAll(c);
     }
 
@@ -54,15 +54,15 @@ public class ForwardingSet<E> implements Set {
         return Set.super.spliterator();
     }
 
-    public boolean removeAll(Collection c) {
+    public boolean removeAll(Collection<?> c) {
         return s.removeAll(c);
     }
 
-    public boolean retainAll(Collection c) {
+    public boolean retainAll(Collection<?> c) {
         return s.retainAll(c);
     }
 
-    public boolean containsAll(Collection c) {
+    public boolean containsAll(Collection<?> c) {
         return s.containsAll(c);
     }
 }

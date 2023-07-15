@@ -12,9 +12,9 @@ public class InstrumnetdSet<E> extends ForwardingSet<E> {
     }
 
     @Override
-    public boolean add(Object o) {
+    public boolean add(E e) {
         addCount++;
-        return super.add(o);
+        return super.add(e);
     }
 
     @Override

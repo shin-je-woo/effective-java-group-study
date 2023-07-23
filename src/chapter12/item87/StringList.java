@@ -94,7 +94,7 @@ public final class StringList implements Serializable {
         }
 
         // 역직렬화
-        StringList deserializedObject = null;
+        StringList deserializedObject = new StringList();
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(fileName))) {
             deserializedObject.readObject(ois);
             System.out.println(deserializedObject);

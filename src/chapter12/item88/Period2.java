@@ -17,11 +17,12 @@ public final class Period2 implements Serializable {
      * @throws NullPointerException start나 end가 null이면 발생한다.
      */
     public Period2(Date start, Date end) {
-        this.start = start;
-        this.end   = end;
-        if (start.compareTo(end) > 0)
+        this.start = new Date(start.getTime());
+        this.end = new Date(end.getTime());
+
+        if (this.start.compareTo(this.end) > 0)
             throw new IllegalArgumentException(
-                    start + "가 " + end + "보다 늦다.");
+                    this.start + "가 " + this.end + "보다 늦다.");
     }
 
     public Date start() {

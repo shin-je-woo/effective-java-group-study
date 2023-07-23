@@ -44,4 +44,11 @@ public final class Period2 implements Serializable {
             throw new InvalidObjectException(start +" after " + end);
     }
 
+    @Override
+    public String toString() {
+        return "Period2{" +
+                "start=" + start +
+                ", end=" + end +
+                '}';
+    }
 }

@@ -21,11 +21,12 @@ public class MutablePeriod {
             out.writeObject(new Period2(new Date(), new Date()));
 
             /*
-             * 악의적인 바이트스트림을 주입한다.
+             * 악의적인 private Date 필드의 바이트스트림을 주입한다.
              */
-            byte[] ref = { 0x71, 0, 0x7e, 0, 5 }; // 참조 #5
+            byte[] ref = { 0x71, 0, 0x7e, 0, 5 };
             bos.write(ref);                       // 시작 start 필드
-            ref[4] = 4;                           // 참조 # 4
+
+            ref[4] = 4;
             bos.write(ref);                       // 종료 end 필드
 
             // 역직렬화 과정에서 Period 객체의 Date 참조를 훔친다.
@@ -34,7 +35,6 @@ public class MutablePeriod {
             period = (Period2) in.readObject();
             start  = (Date) in.readObject();
             end    = (Date) in.readObject();
-
         } catch (IOException | ClassNotFoundException e) {
             throw new AssertionError(e);
         }

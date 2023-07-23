@@ -28,6 +28,7 @@ public class BogusPeriod {
         System.out.println(p);
     }
 
+    //주어진 직렬화 형태(바이트 스트림)로부터 객체를 만들어 반환한다.
     static Object deserialize(byte[] sf) {
         try {
             ByteArrayInputStream in = new ByteArrayInputStream(sf);
